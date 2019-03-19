@@ -13,6 +13,7 @@ class MPIS_OP():
     if_write_exe = False
     flag_input_j = False
     flag_input_k = False
+    flag_wait_next_cyc = False
     input_j = ""
     input_k = ""
     output = ""
@@ -43,20 +44,24 @@ class MPIS_OP():
         print("%s has been issued!\n"%self.name)
         return reg_dict
 
-    def update_state(self,cycle_num):
+    def update_state(self,cycle_num, reg_dict):
         #check if it can begin execute:
+        self.flag_input_j = reg_dict[self.input_j]
+        self.flag_input_k = reg_dict[self.input_k]
+        self.if_begin_exe = (self.flag_input_k and self.flag_input_j)
         if self.if_begin_exe:
             self.executed_cyc += 1
             print("%s is in own_cycle : %d, total is %d cyc!\n" % (self.name, self.executed_cyc, self.required_cycle))
-        if self.required_cycle ==  self.excuted_cyc:
+        if self.required_cycle == self.executed_cyc:
             self.if_write_exe = True
             self.end_exe_cycle = cycle_num
         else:
             self.if_write_exe = False
+            flag_wait_next_cyc = True
         return
 
     def write_results(self, cycle_num,reg_dict ):
-        if self.if_write_exe:
+        if self.if_write_exe and (self.flag_wait_next_cyc == False):
             self.write_cycle = cycle_num
             reg_dict[self.output] = True
             print("%s is written to register" %(self.name))

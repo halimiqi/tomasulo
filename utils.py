@@ -9,7 +9,7 @@ def read_file(file_name):
     k_list = []
     with open(file_name, "r") as fin:
         for line in fin:
-            tmp_str = line.strip().split("\t")
+            tmp_str = line.strip().split(" ")
             str_list.append(tmp_str[0])
             res_list.append(tmp_str[1])
             j_list.append(tmp_str[2])
